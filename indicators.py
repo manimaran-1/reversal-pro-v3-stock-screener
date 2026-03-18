@@ -12,7 +12,11 @@ def calculate_bollinger_bands(df, length=20, std_dev=2.0):
     """
     Calculates standard Bollinger Bands using pandas_ta with TradingView exact math (ddof=0).
     """
-    bb = ta.bbands(df['close'], length=length, std=std_dev, mamode="sma", ddof=0)
+    try:
+        bb = ta.bbands(df['close'], length=length, std=std_dev, mamode="sma", ddof=0)
+    except TypeError:
+        # Older pandas-ta versions don't support ddof parameter
+        bb = ta.bbands(df['close'], length=length, std=std_dev, mamode="sma")
     if bb is not None and not bb.empty:
         bbl_col = [c for c in bb.columns if c.startswith('BBL')][0]
         bbu_col = [c for c in bb.columns if c.startswith('BBU')][0]
