@@ -41,12 +41,7 @@ def check_password():
                     else:
                         st.error("😕 Incorrect username or password")
                 else:
-                    # Fallback for local testing if secrets are missing
-                    if username == "mohan" and password == "7824":
-                        st.session_state["password_correct"] = True
-                        st.rerun()
-                    else:
-                        st.error("😕 Incorrect username or password (Secrets not configured)")
+                    st.error("😕 Secrets not configured")
     return False
 
 if not check_password():
