@@ -15,12 +15,14 @@ header {visibility: hidden;}
 </style>
 '''
 st.markdown(hide_st_style, unsafe_allow_html=True)
+import hmac
 
 def check_password():
     if "password_correct" not in st.session_state:
         st.session_state["password_correct"] = False
     if st.session_state["password_correct"]:
         return True
+    
     st.markdown("<h1 style='text-align: center; margin-top: 50px;'>🔐 Secure Access</h1>", unsafe_allow_html=True)
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
@@ -28,16 +30,28 @@ def check_password():
             username = st.text_input("Username")
             password = st.text_input("Password", type="password")
             submit = st.form_submit_button("Login", use_container_width=True)
+            
             if submit:
-                if username == "mohan" and password == "7824":
-                    st.session_state["password_correct"] = True
-                    st.rerun()
+                # Load multi-user credentials from Streamlit secrets
+                if "users" in st.secrets:
+                    users = st.secrets["users"]
+                    if username in users and hmac.compare_digest(password, str(users[username])):
+                        st.session_state["password_correct"] = True
+                        st.rerun()
+                    else:
+                        st.error("😕 Incorrect username or password")
                 else:
-                    st.error("😕 Incorrect username or password")
+                    # Fallback for local testing if secrets are missing
+                    if username == "mohan" and password == "7824":
+                        st.session_state["password_correct"] = True
+                        st.rerun()
+                    else:
+                        st.error("😕 Incorrect username or password (Secrets not configured)")
     return False
 
 if not check_password():
     st.stop()
+
 # -----------------------------
 
 
