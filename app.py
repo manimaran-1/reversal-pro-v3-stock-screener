@@ -11,7 +11,8 @@ hide_style = """
 <style>
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
-    .stDeployButton {display:none;}
+        .stDeployButton, [data-testid="stAppDeployButton"] {display: none !important;}
+    .stGithubButton, [data-testid="stToolbarActionButton"] {display: none !important;}
 </style>
 """
 st.markdown(hide_style, unsafe_allow_html=True)
